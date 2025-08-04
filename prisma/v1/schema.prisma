@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(cuid())
+  discordId        String            @unique
+  username         String
+  avatar           String?
+  email            String?           @unique
+  coins            Int               @default(0)
+  projects         Project[]
+  purchasedModules PurchasedModule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([id])
+  @@map("users")
+}
+
+model Project {
+  id        String            @id @default(cuid())
+  discordId String            @unique
+  token     String            @unique
+  username  String
+  avatar    String?
+  userId    String
+  user      User              @relation(fields: [userId], references: [id]) // Maybe on delete cascade?
+  modules   PurchasedModule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("projects")
+}
+
+model PurchasedModule {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  moduleId  String
+  module    Module  @relation(fields: [moduleId], references: [id])
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@unique([moduleId, projectId])
+  @@index([projectId])
+  @@map("purchased_modules")
+}
+
+model Module {
+  id        String            @id @default(cuid())
+  name      String            @unique
+  price     Int
+  mainFile  String
+  purchases PurchasedModule[]
+
+  @@index([name])
+  @@map("modules")
+}

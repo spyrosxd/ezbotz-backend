@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { Session } from "hono-sessions";
 import ky from "ky";
 import { env } from "../../env";
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../lib/prisma";
 
 type SessionDataTypes = {
   oauthState: string;
@@ -101,7 +101,7 @@ router.get("/callback", async (c) => {
     });
 
     session.set("userId", user.id);
-    
+
     return c.redirect(`${env.FRONTEND_URL}/dashboard`);
   } catch (error) {
     console.error(error);

@@ -5,7 +5,7 @@ const envSchema = z.object({
     .number()
     .positive()
     .max(65536, `options.port should be >= 0 and < 65536`)
-    .default(5000),
+    .default(8787),
   NODE_ENV: z.enum(["development", "test", "production"]),
   FRONTEND_URL: z.url(),
   AUTH_CLIENT_ID: z.string(),
