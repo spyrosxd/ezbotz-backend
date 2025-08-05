@@ -2,7 +2,8 @@
   "name": "backend",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "db:push": "bunx prisma db push --schema prisma/v1/schema.prisma"
+    "db:pushv1": "bunx prisma db push --schema prisma/v1/schema.prisma",
+    "db:studiov1": "bun prisma studio --schema prisma/v1/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^6.13.0",

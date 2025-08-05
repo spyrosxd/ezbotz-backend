@@ -13,7 +13,8 @@ const envSchema = z.object({
   AUTH_REDIRECT_URI: z.string(),
   DATABASE_URL: z.url().min(3),
   SESSION_ENCRYPTION_KEY: z.string().min(32),
-  REDIS_URL: z.string()
+  TOKEN_ENCRYPTION_KEY: z.string().min(32),
+  REDIS_URL: z.string(),
 });
 
 export const env = envSchema.parse(Bun.env);

@@ -5,4 +5,4 @@ node_modules/
 .env
 
 # Prisma
-/prisma/v1/generated
+/src/generated/v1/prisma

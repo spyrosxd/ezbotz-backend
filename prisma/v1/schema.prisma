@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated"
+  output   = "../../src/generated/v1/prisma"
 }
 
 datasource db {
@@ -17,12 +17,31 @@ model User {
   coins            Int               @default(0)
   projects         Project[]
   purchasedModules PurchasedModule[]
+  transactions     Transaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([id])
   @@map("users")
+}
+
+model Transaction {
+  id        String          @id @default(cuid())
+  user      User            @relation(fields: [userId], references: [id])
+  userId    String
+  type      TransactionType
+  amount    Int
+  reason    String
+  createdAt DateTime        @default(now())
+
+  @@index([userId])
+  @@map("transactions")
+}
+
+enum TransactionType {
+  EARN
+  SPEND
 }
 
 model Project {

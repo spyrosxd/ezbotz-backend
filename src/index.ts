@@ -4,7 +4,8 @@ import { csrf } from "hono/csrf";
 import { env } from "./env";
 import v1Router from "./v1";
 
-const app = new Hono().use(csrf({ origin: `${env.FRONTEND_URL}` })).use(
+const app = new Hono()
+.use(csrf({ origin: `${env.FRONTEND_URL}` })).use(
   cors({
     origin: `${env.FRONTEND_URL}`,
     credentials: true,
