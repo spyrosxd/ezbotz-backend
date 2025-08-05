@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import getUserId from "@/v1/lib/getUserId";
 import { prisma } from "@/v1/lib/prisma";
 import { Hono } from "hono";
@@ -14,24 +15,36 @@ const router = new Hono<{
   };
 }>();
 
-router.get("/", async (c) => {
-  const userId = getUserId(c);
+router
+  .get("/", async (c) => {
+    const userId = getUserId(c);
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { avatar: true, coins: true, email: true, username: true },
-    });
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { avatar: true, coins: true, email: true, username: true },
+      });
 
-    if (!user) {
-      return c.json({ error: "Unauthorized" }, 401);
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      return c.json(user, 200);
+    } catch (error) {
+      console.error(error);
+      return c.json({ error: "Failed to get user" }, 500);
     }
+  })
+  .post(async (c) => {
+    try {
+      const session = c.get("session");
+      session.deleteSession();
 
-    return c.json(user, 200);
-  } catch (error) {
-    console.error(error);
-    return c.json({ error: "Failed to get user" }, 500);
-  }
-});
+      return c.redirect(env.FRONTEND_URL);
+    } catch (error) {
+      console.error(error);
+      return c.json({ error: `Failed to logout user` }, 500);
+    }
+  });
 
 export default router;
